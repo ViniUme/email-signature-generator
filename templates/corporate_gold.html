@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Georgia', serif; background: #fff; }
+  .signature { display: inline-block; padding: 16px 24px; background: #ffffff; max-width: 500px; border-top: 2px solid #B8860B; }
+  .header-line { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .name { font-size: 17px; font-weight: bold; color: #1a1a1a; }
+  .sep { color: #B8860B; font-size: 14px; }
+  .position { font-size: 13px; color: #666666; font-style: italic; }
+  .department { font-size: 12px; color: #B8860B; font-weight: bold; margin-top: 2px; text-transform: uppercase; letter-spacing: 1.5px; }
+  .contact { margin-top: 10px; font-size: 12px; color: #555555; line-height: 1.7; }
+  .footer { margin-top: 10px; font-size: 10px; color: #aaaaaa; letter-spacing: 0.8px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="signature">
+  <div class="header-line">
+    <span class="name">{{name}}</span>
+    <span class="sep">|</span>
+    <span class="position">{{position}}</span>
+  </div>
+  <div class="department">{{department}}</div>
+  <div class="contact">
+    ☎ {{phone}}<br>
+    ✉ {{email}}
+  </div>
+  <div class="footer">Your Company Inc. &mdash; Excellence in Solutions</div>
+</div>
+</body>
+</html>

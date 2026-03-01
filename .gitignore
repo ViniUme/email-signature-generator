@@ -1,0 +1,15 @@
+# Virtual environment
+venv/
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated signatures (output do programa)
+output/
