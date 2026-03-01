@@ -456,8 +456,8 @@ def main():
     info(f"Templates : {TEMPLATES_DIR}")
     info(f"Dados     : {DATA_DIR}")
     info(f"Saída     : {OUTPUT_DIR}")
-    print(c("\n\nCertifique-se de colocar os arquivos nas pastas corretas!\n\n", Color.YELLOW))
-    input(c("Pressione Enter para continuar...", Color.CYAN))
+    print(c("\n\n  Certifique-se de colocar os arquivos nas pastas corretas!\n\n", Color.YELLOW))
+    input("Pressione Enter para continuar...")
 
     os.system('cls' if sys.platform == 'win32' else 'clear')
 
