@@ -98,7 +98,7 @@ def clear_screen():
 def header():
     clear_screen()
     print(c("╔══════════════════════════════════════════════════╗", Color.BLUE))
-    print(c("║          EMAIL SIGNATURE GENERATOR               ║", Color.BLUE))
+    print(c("║          GERADOR DE ASSINATURA DE EMAIL          ║", Color.BLUE))
     print(c("╚══════════════════════════════════════════════════╝", Color.BLUE))
     print()
 
@@ -444,34 +444,37 @@ def safe_filename(text: str) -> str:
     text = re.sub(r'_+', '_', text).strip('_')
     return text
 
+def press_to_exit() -> str:
+    return input("\nPressione Enter para sair...")
+
 
 # ─── Main flow ────────────────────────────────────────────────────────────────
 def main():
     deps = import_deps()
     header()
 
-    info(f"Templates folder : {TEMPLATES_DIR}")
-    info(f"Data folder      : {DATA_DIR}")
-    info(f"Output folder    : {OUTPUT_DIR}")
+    info(f"Templates : {TEMPLATES_DIR}")
+    info(f"Dados     : {DATA_DIR}")
+    info(f"Saída     : {OUTPUT_DIR}")
     print()
 
     # 1. Select template
     template_path = select_template()
     if not template_path:
-        input("\nPress Enter to exit...")
+        press_to_exit()
         return
 
     # 2. Select Excel file (always shows list)
     excel_path = select_excel_file()
     if not excel_path:
-        input("\nPress Enter to exit...")
+        press_to_exit()
         return
 
     # 3. Load employees
     employees = read_employees(excel_path, deps)
     if not employees:
         fail("No employees found in the Excel file.")
-        input("\nPress Enter to exit...")
+        press_to_exit()
         return
 
     col_map = detect_columns(employees)
