@@ -322,16 +322,16 @@ def select_excel_file() -> Optional[Path]:
     )
 
     if not excels:
-        fail(f"No Excel files found in: {DATA_DIR}")
-        info("Place your .xlsx file(s) in the 'data' folder, or enter a full path below.")
-        raw = input(c("  Full path to Excel file: ", Color.CYAN)).strip().strip('"')
+        fail(f"Nenhum arquivo Excel encontrado em: {DATA_DIR}")
+        info("Coloque seus arquivos .xlsx na pasta 'data', ou digite o caminho completo abaixo.")
+        raw = input(c("  Caminho completo do arquivo Excel: ", Color.CYAN)).strip().strip('"')
         p = Path(raw)
         if p.exists():
             return p
-        fail("File not found.")
+        fail("Arquivo não encontrado ou inacessível.")
         return None
 
-    print(c(f"\n  Excel files in data/ ({len(excels)} found):", Color.BOLD))
+    print(c(f"\n  Arquivos excel na pasta data/ ({len(excels)} encontrados):", Color.BOLD))
     divider()
     for i, p in enumerate(excels):
         print(f"  {c(str(i + 1), Color.YELLOW)}. {p.name}")
@@ -339,12 +339,13 @@ def select_excel_file() -> Optional[Path]:
 
     while True:
         try:
-            idx = int(input(c("  Select file number: ", Color.CYAN))) - 1
+            idx = int(input(c("  Selecione o número do arquivo: ", Color.CYAN))) - 1
             if 0 <= idx < len(excels):
+                os.system('cls' if sys.platform == 'win32' else 'clear')
                 return excels[idx]
         except ValueError:
             pass
-        fail("Invalid number. Try again.")
+        fail("Número inválido. Tente novamente.")
 
 
 def select_template() -> Optional[Path]:
@@ -368,6 +369,7 @@ def select_template() -> Optional[Path]:
         try:
             idx = int(input(c("  Selecione o número do template: ", Color.CYAN))) - 1
             if 0 <= idx < len(templates):
+                os.system('cls' if sys.platform == 'win32' else 'clear')
                 return templates[idx]
         except ValueError:
             pass
