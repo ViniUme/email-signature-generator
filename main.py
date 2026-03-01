@@ -350,15 +350,15 @@ def select_excel_file() -> Optional[Path]:
 def select_template() -> Optional[Path]:
     templates = list_templates()
     if not templates:
-        fail(f"No .html templates found in: {TEMPLATES_DIR}")
-        info("Create a .html file in the 'templates' folder using {{name}}, {{position}}, {{phone}} variables.")
+        fail(f"Nenhum template .html encontrado em: {TEMPLATES_DIR}")
+        info("Crie um arquivo .html na pasta 'templates' usando as variáveis {{name}}, {{position}}, {{phone}}.")
         return None
 
     if len(templates) == 1:
-        info(f"Template found: {c(templates[0].name, Color.GREEN)}")
+        info(f"Template encontrado: {c(templates[0].name, Color.GREEN)}")
         return templates[0]
 
-    print(c("\n  Available templates:", Color.BOLD))
+    print(c("\n  Templates disponíveis:", Color.BOLD))
     divider()
     for i, t in enumerate(templates):
         print(f"  {c(str(i + 1), Color.YELLOW)}. {t.stem}")
@@ -366,12 +366,12 @@ def select_template() -> Optional[Path]:
 
     while True:
         try:
-            idx = int(input(c("  Select template number: ", Color.CYAN))) - 1
+            idx = int(input(c("  Selecione o número do template: ", Color.CYAN))) - 1
             if 0 <= idx < len(templates):
                 return templates[idx]
         except ValueError:
             pass
-        fail("Invalid number. Try again.")
+        fail("Número inválido. Tente novamente.")
 
 
 def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
