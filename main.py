@@ -158,9 +158,12 @@ def read_employees(excel_path: Path, deps: dict) -> list[dict]:
                 if j < len(headers):
                     emp[headers[j]] = str(val).strip() if val is not None else ''
             employees.append(emp)
+
+        os.system('cls' if sys.platform == 'win32' else 'clear')
+        
         return employees
     except Exception as e:
-        fail(f"Could not read Excel file: {e}")
+        fail(f"Não foi possível ler o arquivo Excel: {e}")
         return []
 
 
@@ -478,7 +481,7 @@ def main():
     # 3. Load employees
     employees = read_employees(excel_path, deps)
     if not employees:
-        fail("No employees found in the Excel file.")
+        fail("Nenhum funcionário encontrado no arquivo Excel.")
         press_to_exit()
         return
 
