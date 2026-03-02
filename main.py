@@ -492,7 +492,7 @@ def main():
 
     # 4. Select which employees
     selected = select_employees(employees, col_map)
-    info(f"{len(selected)} employee(s) selected.")
+    info(f"{len(selected)} funcionário(s) selecionados.")
 
     # 5. Select output format
     fmt = select_format()
@@ -503,7 +503,7 @@ def main():
 
     print()
     divider()
-    print(c(f"  Generating {len(selected)} signature(s) as {fmt.upper()}...", Color.BOLD))
+    print(c(f"  Gerando {len(selected)} assinatura(s) como {fmt.upper()}...", Color.BOLD))
     divider()
 
     name_col = col_map.get('name', list(employees[0].keys())[0] if employees else 'name')
@@ -526,17 +526,17 @@ def main():
     # 7. Summary
     print()
     divider()
-    print(c(f"  Done! {len(generated)} signature(s) generated.", Color.GREEN + Color.BOLD))
+    print(c(f"  Feito! {len(generated)} assinatura(s) gerada(s).", Color.GREEN + Color.BOLD))
     if errors:
-        warn(f"{len(errors)} error(s) occurred.")
-    info(f"Files saved to: {OUTPUT_DIR}")
+        warn(f"{len(errors)} erro(s) ocorrido(s).")
+    info(f"Arquivos salvos em: {OUTPUT_DIR}")
     divider()
 
-    again = input(c("\n  Generate more signatures? (y/n): ", Color.CYAN)).strip().lower()
+    again = input(c("\n  Gerar mais assinaturas? (y/n): ", Color.CYAN)).strip().lower()
     if again == 'y':
         main()
     else:
-        print(c("\n  Goodbye!\n", Color.BLUE))
+        print(c("\n  Adeus!\n", Color.BLUE))
 
 
 if __name__ == '__main__':
