@@ -383,12 +383,12 @@ def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
     total = len(employees)
     name_col = col_map.get('name', list(employees[0].keys())[0] if employees else 'name')
 
-    print(c(f"\n  Total employees loaded: {total}", Color.BOLD))
+    print(c(f"\n  Total de funcionários carregados: {total}", Color.BOLD))
 
-    choice = menu("Which employees?", [
-        ('1', 'All employees'),
-        ('2', 'Range  (e.g. employees 3 to 10)'),
-        ('3', 'Single employee'),
+    choice = menu("Quais funcionários?", [
+        ('1', 'Todos funcionários'),
+        ('2', 'Range  (ex: funcionários de 3 à 10)'),
+        ('3', 'Funcionário único'),
     ])
 
     if choice == '1':
@@ -397,33 +397,33 @@ def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
     elif choice == '2':
         print()
         for i, emp in enumerate(employees):
-            name = emp.get(name_col, f'Employee {i + 1}')
+            name = emp.get(name_col, f'Funcionário {i + 1}')
             print(f"  {c(str(i + 1), Color.YELLOW)}. {name}")
         divider()
         while True:
             try:
-                start = int(input(c("  From (number): ", Color.CYAN)))
-                end   = int(input(c("  To   (number): ", Color.CYAN)))
+                start = int(input(c("  De (número): ", Color.CYAN)))
+                end   = int(input(c("  Até   (número): ", Color.CYAN)))
                 if 1 <= start <= end <= total:
                     return employees[start - 1:end]
-                fail(f"Invalid range. Enter values between 1 and {total}.")
+                fail(f"Range inválido. Digite um valor entre 1 e {total}.")
             except ValueError:
-                fail("Numbers only please.")
+                fail("Apenas números, por favor.")
 
     elif choice == '3':
         print()
         for i, emp in enumerate(employees):
-            name = emp.get(name_col, f'Employee {i + 1}')
+            name = emp.get(name_col, f'Funcionário {i + 1}')
             print(f"  {c(str(i + 1), Color.YELLOW)}. {name}")
         divider()
         while True:
             try:
-                idx = int(input(c("  Employee number: ", Color.CYAN)))
+                idx = int(input(c("  Funcionário número: ", Color.CYAN)))
                 if 1 <= idx <= total:
                     return [employees[idx - 1]]
-                fail(f"Invalid number. Enter between 1 and {total}.")
+                fail(f"Número inválido. Digite um valor entre 1 e {total}.")
             except ValueError:
-                fail("Numbers only please.")
+                fail("Apenas números, por favor.")
 
     return employees
 
