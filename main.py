@@ -486,9 +486,9 @@ def main():
         return
 
     col_map = detect_columns(employees)
-    ok(f"{len(employees)} employee(s) loaded from '{excel_path.name}'.")
+    ok(f"{len(employees)} funcionário(s) carregado(s) de '{excel_path.name}'.")
     if col_map:
-        info("Detected columns: " + ", ".join(f"{k} → {v}" for k, v in col_map.items()))
+        info("Colunas detectadas: " + ", ".join(f"{k} → {v}" for k, v in col_map.items()))
 
     # 4. Select which employees
     selected = select_employees(employees, col_map)
