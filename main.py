@@ -429,7 +429,7 @@ def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
 
 
 def select_format() -> str:
-    choice = menu("Output format:", [
+    choice = menu("Formato de saída:", [
         ('1', 'HTML  (.html)'),
         ('2', 'PDF   (.pdf)'),
         ('3', 'JPEG  (.jpg)'),
