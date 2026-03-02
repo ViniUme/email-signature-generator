@@ -132,10 +132,10 @@ def menu(title: str, options: list[tuple[str, str]]) -> str:
     divider()
     valid = [o[0].lower() for o in options]
     while True:
-        choice = input(c("  Your choice: ", Color.CYAN)).strip().lower()
+        choice = input(c("  Sua escolha: ", Color.CYAN)).strip().lower()
         if choice in valid:
             return choice
-        fail("Invalid option. Please try again.")
+        fail("Opção inválida. Tente novamente.")
 
 
 # ─── Excel reading ────────────────────────────────────────────────────────────
@@ -159,7 +159,7 @@ def read_employees(excel_path: Path, deps: dict) -> list[dict]:
                     emp[headers[j]] = str(val).strip() if val is not None else ''
             employees.append(emp)
 
-        os.system('cls' if sys.platform == 'win32' else 'clear')
+        clear_screen()
         
         return employees
     except Exception as e:
@@ -344,7 +344,7 @@ def select_excel_file() -> Optional[Path]:
         try:
             idx = int(input(c("  Selecione o número do arquivo: ", Color.CYAN))) - 1
             if 0 <= idx < len(excels):
-                os.system('cls' if sys.platform == 'win32' else 'clear')
+                clear_screen()
                 return excels[idx]
         except ValueError:
             pass
@@ -372,7 +372,7 @@ def select_template() -> Optional[Path]:
         try:
             idx = int(input(c("  Selecione o número do template: ", Color.CYAN))) - 1
             if 0 <= idx < len(templates):
-                os.system('cls' if sys.platform == 'win32' else 'clear')
+                clear_screen()
                 return templates[idx]
         except ValueError:
             pass
@@ -392,6 +392,7 @@ def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
     ])
 
     if choice == '1':
+        clear_screen()
         return employees
 
     elif choice == '2':
@@ -405,6 +406,7 @@ def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
                 start = int(input(c("  De (número): ", Color.CYAN)))
                 end   = int(input(c("  Até   (número): ", Color.CYAN)))
                 if 1 <= start <= end <= total:
+                    clear_screen()
                     return employees[start - 1:end]
                 fail(f"Range inválido. Digite um valor entre 1 e {total}.")
             except ValueError:
@@ -420,11 +422,14 @@ def select_employees(employees: list[dict], col_map: dict) -> list[dict]:
             try:
                 idx = int(input(c("  Funcionário número: ", Color.CYAN)))
                 if 1 <= idx <= total:
+                    clear_screen()
                     return [employees[idx - 1]]
                 fail(f"Número inválido. Digite um valor entre 1 e {total}.")
             except ValueError:
                 fail("Apenas números, por favor.")
 
+    clear_screen()
+    
     return employees
 
 
@@ -434,6 +439,8 @@ def select_format() -> str:
         ('2', 'PDF   (.pdf)'),
         ('3', 'JPEG  (.jpg)'),
     ])
+
+    clear_screen()
     return {'1': 'html', '2': 'pdf', '3': 'jpg'}[choice]
 
 
@@ -464,7 +471,7 @@ def main():
     print(c("\n\n  Certifique-se de colocar os arquivos nas pastas corretas!\n\n", Color.YELLOW))
     input("Pressione Enter para continuar...")
 
-    os.system('cls' if sys.platform == 'win32' else 'clear')
+    clear_screen()
 
     # 1. Select template
     template_path = select_template()
