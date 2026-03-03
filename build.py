@@ -54,7 +54,7 @@ def build() -> bool:
         "--hidden-import", "PIL.Image",
         "--hidden-import", "PIL.ImageDraw",
         "--hidden-import", "PIL.ImageFont",
-        str(BASE / "email_signature_generator.py")
+        str(BASE / "main.py")
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
