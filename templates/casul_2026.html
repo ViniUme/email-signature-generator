@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=1024, height=342, initial-scale=1.0">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            html {
+                width: 1024px;
+                height: 342px;
+            }
+            body { 
+                font-family: "Rubik", serif; background: #fff;
+                background: url("casul_2026.png") no-repeat center / cover;
+                height: 100%;
+                width: 100%;
+                position: relative;
+            }
+            .signature {
+                display: block;
+                position: absolute;
+                margin: auto;
+                left: 421px;
+                top: 30px;
+            }
+            .name {
+                display: block;
+                color: #016250;
+                font-size: 67px;
+                font-weight: bold;
+                width: 580px;
+                line-height: 64px;
+                height: min-content;
+            }
+            .position {
+                display: block;
+                color: #7aad55;
+                font-size: 24px;
+                margin: 4px 0 0 5px;
+                width: 560px;
+                height: min-content;
+            }
+            .email {
+                display: inline-block;
+                position: absolute;
+                left: 423px;
+                bottom: 100px;
+                color: #606060;
+                font-size: 20px;
+            }
+            .tel {
+                position: absolute;
+                bottom: 59px;
+                left: 445px;
+                color: #606060;
+                font-size: 13px;
+            }
+            .department {
+                position: absolute;
+                bottom: 59px;
+                left: 585px;
+                color: #606060;
+                font-size: 13px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="signature">
+            <div class="header-line">
+                <span class="name">{{name}}</span>
+                <span class="position">{{position}}</span>
+            </div>
+        </div>
+        <span class="email">{{email}}</span>
+        <span class="tel">{{phone}}</span>
+        <span class="department">{{department}}</span>
+    </body>
+</html>
