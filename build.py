@@ -54,6 +54,7 @@ def build() -> bool:
         "--hidden-import", "PIL.Image",
         "--hidden-import", "PIL.ImageDraw",
         "--hidden-import", "PIL.ImageFont",
+        "playwright", "install", "chromium",
         str(BASE / "main.py")
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)

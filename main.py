@@ -229,22 +229,57 @@ def render_template(template: str, data: dict, col_map: dict) -> str:
 # ─── Output generation ────────────────────────────────────────────────────────
 def html_to_jpg(html_content: str, output_path: Path, deps: dict):
     try:
-        from html2image import Html2Image
-        with tempfile.TemporaryDirectory() as tmp:
-            hti = Html2Image(output_path=tmp, size=(600, 200))
-            hti.screenshot(html_str=html_content, save_as="sig_tmp.png")
-            img_path = Path(tmp) / "sig_tmp.png"
-            if img_path.exists():
-                img = deps['Image'].open(img_path)
-                bbox = img.convert("RGB").getbbox()
-                if bbox:
-                    img = img.crop((bbox[0], bbox[1],
-                                    min(bbox[2]+20, img.width),
-                                    min(bbox[3]+20, img.height)))
-                img.save(str(output_path), "JPEG", quality=95)
-                return
+        from playwright.sync_api import sync_playwright
+        import tempfile, io
+        from PIL import Image
+
+        # Salva o HTML em arquivo temporário NA MESMA PASTA do template,
+        # assim os caminhos relativos (background, imagens) continuam funcionando
+        tmp_html = TEMPLATES_DIR / "_tmp_render.html"
+        tmp_html.write_text(html_content, encoding='utf-8')
+
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page()
+
+                # Usa file:// para que o browser resolva caminhos relativos
+                page.goto(f"file://{tmp_html.resolve()}", wait_until='networkidle')
+
+                dims = page.evaluate("""() => {
+                    const el = document.querySelector('html');
+                    return {
+                        width:  el.offsetWidth,
+                        height: el.offsetHeight
+                    };
+                }""")
+
+                page.set_viewport_size({
+                    'width':  max(dims['width'], 200),
+                    'height': max(dims['height'], 100)
+                })
+
+                # Rola para garantir que background-image lazy seja carregada
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(300)
+
+                png_bytes = page.screenshot(full_page=False, type='png')
+                browser.close()
+
+            img = Image.open(io.BytesIO(png_bytes)).convert('RGB')
+            img.save(str(output_path), 'JPEG', quality=95)
+            return
+
+        finally:
+            # Sempre remove o arquivo temporário
+            if tmp_html.exists():
+                tmp_html.unlink()
+
     except ImportError:
-        pass
+        warn("Playwright não encontrado. Instale: pip install playwright && playwright install chromium")
+    except Exception as e:
+        warn(f"Playwright falhou: {e}")
+
     _jpg_fallback(html_content, output_path, deps)
 
 
