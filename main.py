@@ -230,40 +230,48 @@ def render_template(template: str, data: dict, col_map: dict) -> str:
 def html_to_jpg(html_content: str, output_path: Path, deps: dict):
     try:
         from playwright.sync_api import sync_playwright
-        import tempfile, io
+        import io
         from PIL import Image
 
-        # Salva o HTML em arquivo temporário NA MESMA PASTA do template,
-        # assim os caminhos relativos (background, imagens) continuam funcionando
+        chromium_dir = BASE_DIR / "chromium"
+        if chromium_dir.exists():
+            os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(chromium_dir)
+
         tmp_html = TEMPLATES_DIR / "_tmp_render.html"
         tmp_html.write_text(html_content, encoding='utf-8')
 
         try:
             with sync_playwright() as p:
                 browser = p.chromium.launch()
-                page = browser.new_page()
 
-                # Usa file:// para que o browser resolva caminhos relativos
+                # Viewport pequeno garante que o browser não expande
+                # o elemento além do tamanho definido no CSS
+                page = browser.new_page(viewport={'width': 1, 'height': 1})
                 page.goto(f"file://{tmp_html.resolve()}", wait_until='networkidle')
+                page.wait_for_timeout(300)
 
+                # Lê o tamanho via getComputedStyle — retorna exatamente
+                # o que foi definido no CSS da tag <html>, sem influência do viewport
                 dims = page.evaluate("""() => {
                     const el = document.querySelector('html');
+                    const style = window.getComputedStyle(el);
                     return {
-                        width:  el.offsetWidth,
-                        height: el.offsetHeight
+                        width:  parseInt(style.width),
+                        height: parseInt(style.height)
                     };
                 }""")
 
+                # Ajusta o viewport para o tamanho exato e rerenderiza
                 page.set_viewport_size({
-                    'width':  max(dims['width'], 200),
-                    'height': max(dims['height'], 100)
+                    'width':  max(dims['width'], 100),
+                    'height': max(dims['height'], 50)
                 })
+                page.wait_for_timeout(200)
 
-                # Rola para garantir que background-image lazy seja carregada
-                page.evaluate("window.scrollTo(0, 0)")
-                page.wait_for_timeout(300)
+                # Captura exatamente a tag <html> — o mesmo elemento medido
+                element = page.query_selector('html')
+                png_bytes = element.screenshot(type='png')
 
-                png_bytes = page.screenshot(full_page=False, type='png')
                 browser.close()
 
             img = Image.open(io.BytesIO(png_bytes)).convert('RGB')
@@ -271,12 +279,11 @@ def html_to_jpg(html_content: str, output_path: Path, deps: dict):
             return
 
         finally:
-            # Sempre remove o arquivo temporário
             if tmp_html.exists():
                 tmp_html.unlink()
 
     except ImportError:
-        warn("Playwright não encontrado. Instale: pip install playwright && playwright install chromium")
+        warn("Playwright não encontrado.")
     except Exception as e:
         warn(f"Playwright falhou: {e}")
 

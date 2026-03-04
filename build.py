@@ -43,6 +43,10 @@ def clean():
 
 def build() -> bool:
     print("[2/4] Compiling executable...")
+
+    print("      Installing Playwright Chromium...")
+    subprocess.check_call([sys.executable, "-m", "playwright", "install", "chromium"])
+
     cmd = [
         sys.executable, "-m", "PyInstaller",
         "--onefile",
@@ -54,7 +58,8 @@ def build() -> bool:
         "--hidden-import", "PIL.Image",
         "--hidden-import", "PIL.ImageDraw",
         "--hidden-import", "PIL.ImageFont",
-        "playwright", "install", "chromium",
+        "--hidden-import", "playwright",
+        "--hidden-import", "playwright.sync_api",
         str(BASE / "main.py")
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -87,6 +92,65 @@ def copy_assets() -> bool:
             dst.mkdir(exist_ok=True)
 
     (package / "output").mkdir(exist_ok=True)
+
+    # Localiza o Chromium — Playwright pode instalá-lo em locais diferentes
+    print("      Locating Playwright Chromium...")
+
+    browsers_src = None
+    candidates = []
+
+    import playwright
+    playwright_pkg = Path(playwright.__file__).parent
+
+    # 1. Dentro do pacote do Playwright (menos comum)
+    candidates.append(playwright_pkg / "driver" / "package" / ".local-browsers")
+
+    # 2. Pasta padrão do sistema (onde 'playwright install' coloca por padrão)
+    if sys.platform == "win32":
+        candidates.append(Path(os.environ.get("LOCALAPPDATA", "")) / "ms-playwright")
+        candidates.append(Path(os.environ.get("USERPROFILE", "")) / "AppData" / "Local" / "ms-playwright")
+    elif sys.platform == "darwin":
+        candidates.append(Path.home() / "Library" / "Caches" / "ms-playwright")
+    else:
+        candidates.append(Path.home() / ".cache" / "ms-playwright")
+
+    # 3. Variável de ambiente customizada (se o usuário tiver definido)
+    env_path = os.environ.get("PLAYWRIGHT_BROWSERS_PATH")
+    if env_path:
+        candidates.insert(0, Path(env_path))
+
+    for candidate in candidates:
+        print(f"      Checking: {candidate}")
+        if candidate.exists() and any(candidate.iterdir()):
+            browsers_src = candidate
+            print(f"      Found at: {browsers_src}")
+            break
+
+    if not browsers_src:
+        print("[WARNING] Chromium not found in any known location.")
+        print("          Run 'playwright install chromium' and try again.")
+    else:
+        # Copia apenas a pasta do chromium_headless_shell, ignorando outros browsers
+        chromium_folders = [
+            d for d in browsers_src.iterdir()
+            if d.is_dir() and "chromium" in d.name.lower()
+        ]
+
+        if not chromium_folders:
+            print(f"[WARNING] No Chromium folder found inside: {browsers_src}")
+        else:
+            browsers_dst = package / "chromium"
+            if browsers_dst.exists():
+                shutil.rmtree(browsers_dst)
+            browsers_dst.mkdir()
+
+            for folder in chromium_folders:
+                dst_folder = browsers_dst / folder.name
+                print(f"      Copying {folder.name}...")
+                shutil.copytree(folder, dst_folder)
+
+            print(f"      Chromium copied to: {browsers_dst}")
+
     print(f"      Package created: {package}")
     return True
 
