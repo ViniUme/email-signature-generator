@@ -560,8 +560,10 @@ def main():
     errors = []
 
     for i, emp in enumerate(selected):
-        emp_name = emp.get(name_col, f'employee_{i + 1}')
-        filename = f"{safe_filename(emp_name)}_{template_name}"
+        emp_name  = emp.get(name_col, f'employee_{i + 1}')
+        email_col = col_map.get('email', None)
+        emp_email = emp.get(email_col, '').strip() if email_col else ''
+        filename  = emp_email if emp_email else safe_filename(emp_name)
 
         try:
             html = render_template(template_html, emp, col_map)
